@@ -1,3 +1,5 @@
+# Diagram https://dbdiagram.io/d/ppob-654324c87d8bbd646551e231
+
 CREATE DATABASE ppob;
 
 USE ppob;
