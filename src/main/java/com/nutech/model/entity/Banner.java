@@ -1,16 +1,23 @@
 package com.nutech.model.entity;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Banner {
 
+    @JsonProperty("banner_name")
     private String bannerName;
+
+    @JsonProperty("banner_image")
     private String bannerImage;
+
     private String description;
 
 }

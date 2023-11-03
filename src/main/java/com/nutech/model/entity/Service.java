@@ -1,17 +1,28 @@
 package com.nutech.model.entity;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Service {
 
+
+    @JsonProperty("service_code")
     private String serviceCode;
+
+    @JsonProperty("service_name")
     private String serviceName;
+
+    @JsonProperty("service_icon")
     private String serviceIcon;
+
+    @JsonProperty("service_tariff")
     private int serviceTariff;
 
 }
