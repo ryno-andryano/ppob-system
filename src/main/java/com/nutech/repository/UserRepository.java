@@ -1,5 +1,6 @@
 package com.nutech.repository;
 
+import com.nutech.model.dto.ProfileUpdateRequest;
 import com.nutech.model.entity.User;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +15,11 @@ import static com.nutech.repository.DataSourceConfig.getDataSource;
 public class UserRepository {
 
     public boolean existByEmail(String email) {
-        String sql = "SELECT * FROM user WHERE email = ?";
+        String sql = """
+                SELECT *
+                FROM user
+                WHERE email = ?
+                """;
 
         try (PreparedStatement statement = getDataSource().getConnection().prepareStatement(sql)) {
             statement.setString(1, email);
@@ -26,7 +31,11 @@ public class UserRepository {
     }
 
     public Optional<User> findByEmail(String email) {
-        String sql = "SELECT * FROM user WHERE email = ?";
+        String sql = """
+                SELECT *
+                FROM user
+                WHERE email = ?
+                """;
 
         try (PreparedStatement statement = getDataSource().getConnection().prepareStatement(sql)) {
             statement.setString(1, email);
@@ -48,7 +57,10 @@ public class UserRepository {
     }
 
     public void insert(User user) {
-        String sql = "INSERT INTO user (email, password, first_name, last_name) VALUES (?, ?, ?, ?)";
+        String sql = """
+                INSERT INTO user (email, password, first_name, last_name)
+                VALUES (?, ?, ?, ?)
+                """;
 
         try (PreparedStatement statement = getDataSource().getConnection().prepareStatement(sql)) {
             statement.setString(1, user.getEmail());
@@ -59,6 +71,25 @@ public class UserRepository {
         } catch (SQLException exception) {
             throw new RuntimeException(exception);
         }
+    }
+
+    public User update(String email, ProfileUpdateRequest request) {
+        String sql = """
+                UPDATE user
+                SET first_name = ?, last_name = ?
+                WHERE email = ?
+                """;
+        
+        try (PreparedStatement statement = getDataSource().getConnection().prepareStatement(sql)) {
+            statement.setString(1, request.getFirstName());
+            statement.setString(2, request.getLastName());
+            statement.setString(3, email);
+            statement.executeUpdate();
+        } catch (SQLException exception) {
+            throw new RuntimeException(exception);
+        }
+
+        return findByEmail(email).get();
     }
 
 }

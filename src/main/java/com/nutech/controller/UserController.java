@@ -1,15 +1,11 @@
 package com.nutech.controller;
 
-import com.nutech.model.dto.LoginRequest;
-import com.nutech.model.dto.LoginResponse;
-import com.nutech.model.dto.RegistrationRequest;
-import com.nutech.model.dto.ResponseTemplate;
+import com.nutech.model.dto.*;
 import com.nutech.service.UserService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -41,6 +37,25 @@ public class UserController {
 
         LoginResponse data = userService.login(request);
         ResponseTemplate<LoginResponse> response = new ResponseTemplate<>(0, "Login Sukses", data);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<ResponseTemplate<ProfileResponse>> profile(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
+        String token = auth.substring(7);
+        ProfileResponse data = userService.profile(token);
+        ResponseTemplate<ProfileResponse> response = new ResponseTemplate<>(0, "Sukses", data);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/profile/update")
+    public ResponseEntity<ResponseTemplate<ProfileResponse>> profileUpdate(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String auth,
+            @RequestBody ProfileUpdateRequest request) {
+        String token = auth.substring(7);
+        ProfileResponse data = userService.profileUpdate(token, request);
+        ResponseTemplate<ProfileResponse> response = new ResponseTemplate<>(0, "Update Pofile berhasil", data);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

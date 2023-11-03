@@ -1,8 +1,6 @@
 package com.nutech.service;
 
-import com.nutech.model.dto.LoginRequest;
-import com.nutech.model.dto.LoginResponse;
-import com.nutech.model.dto.RegistrationRequest;
+import com.nutech.model.dto.*;
 import com.nutech.model.entity.User;
 import com.nutech.repository.UserRepository;
 import com.nutech.security.JwtGenerator;
@@ -50,5 +48,27 @@ public class UserService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generateToken(authentication);
         return new LoginResponse(token);
+    }
+
+    public ProfileResponse profile(String token) {
+        String email = jwtGenerator.getEmailFromJwt(token);
+        User user = userRepository.findByEmail(email).get();
+        return ProfileResponse.builder()
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .profileImage(user.getProfileImage())
+                .build();
+    }
+
+    public ProfileResponse profileUpdate(String token, ProfileUpdateRequest request) {
+        String email = jwtGenerator.getEmailFromJwt(token);
+        User user = userRepository.update(email, request);
+        return ProfileResponse.builder()
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .profileImage(user.getProfileImage())
+                .build();
     }
 }
