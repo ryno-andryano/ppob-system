@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class LoginResponse {
+public class BalanceResponse {
 
-    private String token;
+    private int balance;
 
 }

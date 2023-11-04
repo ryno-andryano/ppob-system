@@ -47,10 +47,10 @@ public class UserService {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generateToken(authentication);
-        return new LoginResponse(token);
+        return LoginResponse.builder().token(token).build();
     }
 
-    public ProfileResponse profile(String token) {
+    public ProfileResponse getProfile(String token) {
         String email = jwtGenerator.getEmailFromJwt(token);
         User user = userRepository.findByEmail(email).get();
         return ProfileResponse.builder()
@@ -61,7 +61,7 @@ public class UserService {
                 .build();
     }
 
-    public ProfileResponse profileUpdate(String token, ProfileUpdateRequest request) {
+    public ProfileResponse updateProfile(String token, ProfileUpdateRequest request) {
         String email = jwtGenerator.getEmailFromJwt(token);
         User user = userRepository.update(email, request);
         return ProfileResponse.builder()
@@ -70,5 +70,11 @@ public class UserService {
                 .lastName(user.getLastName())
                 .profileImage(user.getProfileImage())
                 .build();
+    }
+
+    public BalanceResponse getBalance(String token) {
+        String email = jwtGenerator.getEmailFromJwt(token);
+        User user = userRepository.findByEmail(email).get();
+        return BalanceResponse.builder().balance(user.getBalance()).build();
     }
 }

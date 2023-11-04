@@ -41,21 +41,30 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<ResponseTemplate<ProfileResponse>> profile(
+    public ResponseEntity<ResponseTemplate<ProfileResponse>> getProfile(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
         String token = auth.substring(7);
-        ProfileResponse data = userService.profile(token);
+        ProfileResponse data = userService.getProfile(token);
         ResponseTemplate<ProfileResponse> response = new ResponseTemplate<>(0, "Sukses", data);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/profile/update")
-    public ResponseEntity<ResponseTemplate<ProfileResponse>> profileUpdate(
+    public ResponseEntity<ResponseTemplate<ProfileResponse>> updateProfile(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String auth,
             @RequestBody ProfileUpdateRequest request) {
         String token = auth.substring(7);
-        ProfileResponse data = userService.profileUpdate(token, request);
+        ProfileResponse data = userService.updateProfile(token, request);
         ResponseTemplate<ProfileResponse> response = new ResponseTemplate<>(0, "Update Pofile berhasil", data);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/balance")
+    public ResponseEntity<ResponseTemplate<BalanceResponse>> getBalance(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
+        String token = auth.substring(7);
+        BalanceResponse data = userService.getBalance(token);
+        ResponseTemplate<BalanceResponse> response = new ResponseTemplate<>(0, "Get Balance Berhasil", data);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
