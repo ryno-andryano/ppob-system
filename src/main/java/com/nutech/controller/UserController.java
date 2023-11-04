@@ -30,14 +30,14 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<ResponseTemplate<LoginResponse>> login(@RequestBody LoginRequest request) {
-        if (!userService.isExist(request.getEmail())) {
-            ResponseTemplate<LoginResponse> response = new ResponseTemplate<>(102, "Email tidak ditemukan", null);
+        try {
+            LoginResponse data = userService.login(request);
+            ResponseTemplate<LoginResponse> response = new ResponseTemplate<>(0, "Login Sukses", data);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            ResponseTemplate<LoginResponse> response = new ResponseTemplate<>(103, "Username atau password salah", null);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-
-        LoginResponse data = userService.login(request);
-        ResponseTemplate<LoginResponse> response = new ResponseTemplate<>(0, "Login Sukses", data);
-        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/profile")
