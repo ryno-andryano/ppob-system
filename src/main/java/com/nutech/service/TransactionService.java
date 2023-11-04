@@ -1,15 +1,13 @@
 package com.nutech.service;
 
-import com.nutech.model.dto.BalanceResponse;
-import com.nutech.model.dto.TopUpRequest;
-import com.nutech.model.dto.TransactionRequest;
-import com.nutech.model.dto.TransactionResponse;
+import com.nutech.model.dto.*;
 import com.nutech.model.entity.Service;
 import com.nutech.model.entity.Transaction;
 import com.nutech.repository.TransactionRepository;
 import com.nutech.security.JwtGenerator;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @org.springframework.stereotype.Service
@@ -59,7 +57,7 @@ public class TransactionService {
         transactionRepository.insert(transaction);
 
         userService.updateBalance(token, transaction.getTransactionType(), transaction.getTotalAmount());
-        
+
         return TransactionResponse.builder()
                 .invoiceNumber(transaction.getInvoiceNumber())
                 .serviceCode(service.getServiceCode())
@@ -68,5 +66,10 @@ public class TransactionService {
                 .totalAmount(transaction.getTotalAmount())
                 .createdOn(transaction.getCreatedOn())
                 .build();
+    }
+
+    public List<TransactionHistoryResponse> transactionHistory(String token) {
+        String email = jwtGenerator.getEmailFromJwt(token);
+        return transactionRepository.findAll(email);
     }
 }
