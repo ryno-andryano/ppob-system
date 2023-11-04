@@ -9,15 +9,20 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfig {
 
+    private static DataSource dataSource;
+
     @Bean
     public static DataSource getDataSource() {
-        return DataSourceBuilder
-                .create()
-                .username("root")
-                .password("1234")
-                .url("jdbc:mysql://localhost:3306/ppob")
-                .driverClassName("com.mysql.cj.jdbc.Driver")
-                .build();
+        if (dataSource == null)
+            dataSource = DataSourceBuilder
+                    .create()
+                    .username("root")
+                    .password("1234")
+                    .url("jdbc:mysql://localhost:3306/ppob")
+                    .driverClassName("com.mysql.cj.jdbc.Driver")
+                    .build();
+
+        return dataSource;
     }
 
 }
