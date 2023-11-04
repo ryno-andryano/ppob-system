@@ -17,8 +17,8 @@ public class DataSourceConfig {
             dataSource = DataSourceBuilder
                     .create()
                     .username("root")
-                    .password("1234")
-                    .url("jdbc:mysql://localhost:3306/ppob")
+                    .password("hGeEh4C3d1GH141CgaG4g5gcCCEhFeHA")
+                    .url("jdbc:mysql://viaduct.proxy.rlwy.net:22077/railway")
                     .driverClassName("com.mysql.cj.jdbc.Driver")
                     .build();
 
