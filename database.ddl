@@ -28,14 +28,12 @@ CREATE TABLE transaction
 (
     invoice_number   VARCHAR(255),
     user_email       VARCHAR(255)                  NOT NULL,
-    service_code     VARCHAR(255)                  NOT NULL,
     transaction_type ENUM ('TOPUP', 'TRANSACTION') NOT NULL,
     description      VARCHAR(255),
     total_amount     INT                           NOT NULL,
     created_on       VARCHAR(255),
     PRIMARY KEY (invoice_number),
-    CONSTRAINT FK_Transaction_User FOREIGN KEY (user_email) REFERENCES user (email),
-    CONSTRAINT FK_Transaction_Service FOREIGN KEY (service_code) REFERENCES service (service_code)
+    CONSTRAINT FK_Transaction_User FOREIGN KEY (user_email) REFERENCES user (email)
 );
 
 CREATE TABLE banner

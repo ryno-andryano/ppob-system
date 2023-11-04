@@ -77,4 +77,21 @@ public class UserService {
         User user = userRepository.findByEmail(email).get();
         return BalanceResponse.builder().balance(user.getBalance()).build();
     }
+
+    public BalanceResponse updateBalance(String token, String transactionType, int amount) {
+        BalanceResponse balanceResponse = getBalance(token);
+        String email = jwtGenerator.getEmailFromJwt(token);
+        int newBalance = balanceResponse.getBalance();
+        switch (transactionType) {
+            case "TOPUP":
+                newBalance += amount;
+                break;
+            case "TRANSACTION":
+                newBalance -= amount;
+                break;
+        }
+
+        User user = userRepository.updateBalance(email, newBalance);
+        return BalanceResponse.builder().balance(user.getBalance()).build();
+    }
 }

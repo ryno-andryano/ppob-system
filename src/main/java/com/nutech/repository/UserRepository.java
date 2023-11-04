@@ -109,4 +109,24 @@ public class UserRepository {
 
     }
 
+    public User updateBalance(String email, int newBalance) {
+
+        try (Connection connection = getDataSource().getConnection()) {
+            String sql = """
+                    UPDATE user
+                    SET balance = ?
+                    WHERE email = ?
+                    """;
+
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, newBalance);
+                statement.setString(2, email);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return findByEmail(email).get();
+    }
 }

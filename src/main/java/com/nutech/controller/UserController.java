@@ -64,7 +64,7 @@ public class UserController {
             @RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
         String token = auth.substring(7);
         BalanceResponse data = userService.getBalance(token);
-        ResponseTemplate<BalanceResponse> response = new ResponseTemplate<>(0, "Get Balance Berhasil", data);
+        ResponseTemplate<BalanceResponse> response = new ResponseTemplate<>(0, "Get Balance berhasil", data);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

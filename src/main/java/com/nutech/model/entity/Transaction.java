@@ -12,21 +12,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Transaction {
 
-    enum TransactionType {
-        TOPUP, TRANSACTION
-    }
-
     @JsonProperty("invoice_number")
     private String invoiceNumber;
 
     @JsonProperty("user_email")
     private String userEmail;
 
-    @JsonProperty("service_code")
-    private String serviceCode;
-
     @JsonProperty("transaction_type")
-    private TransactionType transactionType;
+    private String transactionType;
 
     private String description;
 
