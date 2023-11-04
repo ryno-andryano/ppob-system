@@ -1,4 +1,4 @@
-package com.nutech.service;
+package com.nutech.repository;
 
 import com.nutech.model.entity.Service;
 import org.springframework.stereotype.Repository;
