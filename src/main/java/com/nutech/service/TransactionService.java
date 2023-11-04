@@ -2,45 +2,71 @@ package com.nutech.service;
 
 import com.nutech.model.dto.BalanceResponse;
 import com.nutech.model.dto.TopUpRequest;
+import com.nutech.model.dto.TransactionRequest;
+import com.nutech.model.dto.TransactionResponse;
+import com.nutech.model.entity.Service;
 import com.nutech.model.entity.Transaction;
 import com.nutech.repository.TransactionRepository;
 import com.nutech.security.JwtGenerator;
-import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.UUID;
 
-@Service
+@org.springframework.stereotype.Service
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final UserService userService;
+    private final ServiceService serviceService;
     private final JwtGenerator jwtGenerator;
 
 
-    public TransactionService(TransactionRepository transactionRepository, UserService userService, JwtGenerator jwtGenerator) {
+    public TransactionService(TransactionRepository transactionRepository, UserService userService, ServiceService serviceService, JwtGenerator jwtGenerator) {
         this.transactionRepository = transactionRepository;
         this.userService = userService;
+        this.serviceService = serviceService;
         this.jwtGenerator = jwtGenerator;
     }
 
     public BalanceResponse topup(String token, TopUpRequest request) {
-        String invoiceNumber = UUID.randomUUID().toString();
         String email = jwtGenerator.getEmailFromJwt(token);
-        String transactionType = "TOPUP";
-        int totalAmount = request.getTopUpAmount();
-        String createdOn = Instant.now().toString();
 
         Transaction transaction = Transaction.builder()
-                .invoiceNumber(invoiceNumber)
+                .invoiceNumber(UUID.randomUUID().toString())
                 .userEmail(email)
-                .transactionType(transactionType)
+                .transactionType("TOPUP")
                 .description("Top Up Balance")
-                .totalAmount(totalAmount)
-                .createdOn(createdOn)
+                .totalAmount(request.getTopUpAmount())
+                .createdOn(Instant.now().toString())
                 .build();
         transactionRepository.insert(transaction);
 
-        return userService.updateBalance(token, transactionType, totalAmount);
+        return userService.updateBalance(token, transaction.getTransactionType(), transaction.getTotalAmount());
+    }
+
+    public TransactionResponse transaction(String token, TransactionRequest request) {
+        String email = jwtGenerator.getEmailFromJwt(token);
+        Service service = serviceService.getService(request.getServiceCode());
+
+        Transaction transaction = Transaction.builder()
+                .invoiceNumber(UUID.randomUUID().toString())
+                .userEmail(email)
+                .transactionType("PAYMENT")
+                .description(service.getServiceName())
+                .totalAmount(service.getServiceTariff())
+                .createdOn(Instant.now().toString())
+                .build();
+        transactionRepository.insert(transaction);
+
+        userService.updateBalance(token, transaction.getTransactionType(), transaction.getTotalAmount());
+        
+        return TransactionResponse.builder()
+                .invoiceNumber(transaction.getInvoiceNumber())
+                .serviceCode(service.getServiceCode())
+                .serviceName(service.getServiceName())
+                .transactionType(transaction.getTransactionType())
+                .totalAmount(transaction.getTotalAmount())
+                .createdOn(transaction.getCreatedOn())
+                .build();
     }
 }

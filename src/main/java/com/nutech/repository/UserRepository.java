@@ -49,8 +49,6 @@ public class UserRepository {
                 ResultSet resultSet = statement.executeQuery();
 
                 if (!resultSet.next()) return Optional.empty();
-
-
                 return Optional.of(new User(
                         resultSet.getString("email"),
                         resultSet.getString("first_name"),

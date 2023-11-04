@@ -27,10 +27,10 @@ CREATE TABLE service
 CREATE TABLE transaction
 (
     invoice_number   VARCHAR(255),
-    user_email       VARCHAR(255)                  NOT NULL,
-    transaction_type ENUM ('TOPUP', 'TRANSACTION') NOT NULL,
+    user_email       VARCHAR(255)              NOT NULL,
+    transaction_type ENUM ('TOPUP', 'PAYMENT') NOT NULL,
     description      VARCHAR(255),
-    total_amount     INT                           NOT NULL,
+    total_amount     INT                       NOT NULL,
     created_on       VARCHAR(255),
     PRIMARY KEY (invoice_number),
     CONSTRAINT FK_Transaction_User FOREIGN KEY (user_email) REFERENCES user (email)

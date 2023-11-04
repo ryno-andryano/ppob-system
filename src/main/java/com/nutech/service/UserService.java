@@ -86,7 +86,7 @@ public class UserService {
             case "TOPUP":
                 newBalance += amount;
                 break;
-            case "TRANSACTION":
+            case "PAYMENT":
                 newBalance -= amount;
                 break;
         }

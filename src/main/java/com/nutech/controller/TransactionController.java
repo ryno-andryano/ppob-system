@@ -1,8 +1,7 @@
 package com.nutech.controller;
 
-import com.nutech.model.dto.BalanceResponse;
-import com.nutech.model.dto.ResponseTemplate;
-import com.nutech.model.dto.TopUpRequest;
+import com.nutech.model.dto.*;
+import com.nutech.service.ServiceService;
 import com.nutech.service.TransactionService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class TransactionController {
 
     private final TransactionService transactionService;
+    private final ServiceService serviceService;
 
-    public TransactionController(TransactionService transactionService) {
+    public TransactionController(TransactionService transactionService, ServiceService serviceService) {
         this.transactionService = transactionService;
+        this.serviceService = serviceService;
     }
 
     @PostMapping("/topup")
@@ -28,6 +29,20 @@ public class TransactionController {
         String token = auth.substring(7);
         BalanceResponse data = transactionService.topup(token, request);
         ResponseTemplate<BalanceResponse> response = new ResponseTemplate<>(0, "Top Up Balance berhasil", data);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/transaction")
+    public ResponseEntity<ResponseTemplate<TransactionResponse>> transaction(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String auth,
+            @RequestBody TransactionRequest request) {
+        String token = auth.substring(7);
+        if (!serviceService.isExist(request.getServiceCode())) {
+            ResponseTemplate<TransactionResponse> response = new ResponseTemplate<>(102, "Service atau Layanan tidak ditemukan", null);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        TransactionResponse data = transactionService.transaction(token, request);
+        ResponseTemplate<TransactionResponse> response = new ResponseTemplate<>(0, "Transaksi berhasil", data);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
